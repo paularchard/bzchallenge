@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.8)
 set(PROJECT_NAME_STR bluzelle-challenge)
-project(${PROJECT_NAME_STR} C CXX)
+project(${PROJECT_NAME_STR} CXX)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 get_filename_component(DEPS_ROOT "${PROJECT_BINARY_DIR}/deps" ABSOLUTE)
@@ -45,8 +45,8 @@ enable_testing()
 include_directories(${COMMON_INCLUDES})
 
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-ADD_LIBRARY(${PROJECT_NAME_STR}_objects OBJECT ${SRC_FILES})
-ADD_EXECUTABLE(${PROJECT_NAME_STR} $<TARGET_OBJECTS:${PROJECT_NAME_STR}_objects> ${PROJECT_SOURCE_DIR}/main/main.cpp)
+add_library(${PROJECT_NAME_STR}_objects OBJECT ${SRC_FILES})
+add_executable(${PROJECT_NAME_STR} $<TARGET_OBJECTS:${PROJECT_NAME_STR}_objects> ${PROJECT_SOURCE_DIR}/main/main.cpp)
 
 file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
 
