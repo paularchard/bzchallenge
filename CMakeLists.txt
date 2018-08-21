@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.8)
 set(PROJECT_NAME_STR bluzelle-challenge)
-project(${PROJECT_NAME_STR} CXX)
+project(${PROJECT_NAME_STR} CXX C)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 get_filename_component(DEPS_ROOT "${PROJECT_BINARY_DIR}/deps" ABSOLUTE)
