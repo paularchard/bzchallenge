@@ -27,7 +27,7 @@ TEST(Analyzer, TestEmptyData)
     std::map<date, double> data;
     analyzer a(data);
 
-    ASSERT_EQ(a.count(), 0);
+    EXPECT_EQ(a.count(), 0U);
 
     // all these functions should throw an exception when the data is empty
     test_domain_exception(std::bind(&analyzer::lowest, a));
@@ -55,7 +55,7 @@ TEST(Analyzer, TestStdDevOnTwoValues)
     data.insert(std::make_pair(date(2018, 1, 2), 2.));
     
     analyzer a(data);
-    ASSERT_EQ(a.count(), 2);
+    EXPECT_EQ(a.count(), 2U);
 
     try
     {
@@ -77,15 +77,15 @@ TEST(Analyzer, TestValidCase)
     data.insert(std::make_pair(date(2018, 1, 3), 3.));
     
     analyzer a(data);
-    ASSERT_EQ(a.count(), 3);
+    EXPECT_EQ(a.count(), 3U);
 
     try
     {
-        ASSERT_EQ(a.mean_value(), 2.);
-        ASSERT_EQ(a.median_value(), 2.);
-        ASSERT_EQ(a.stddev_value(), 1.);
-        ASSERT_EQ(a.highest(), std::make_pair(date(2018, 1, 3), 3.));
-        ASSERT_EQ(a.lowest(), std::make_pair(date(2018, 1, 1), 1.));
+        EXPECT_EQ(a.mean_value(), 2.);
+        EXPECT_EQ(a.median_value(), 2.);
+        EXPECT_EQ(a.stddev_value(), 1.);
+        EXPECT_EQ(a.highest(), std::make_pair(date(2018, 1, 3), 3.));
+        EXPECT_EQ(a.lowest(), std::make_pair(date(2018, 1, 1), 1.));
     }
     catch (std::exception &e)
     {
