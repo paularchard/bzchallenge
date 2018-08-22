@@ -47,6 +47,22 @@ TEST(DataSeries, InitializeWithBadValue)
     ASSERT_FALSE(series.load(data));
 }
 
+TEST(DataSeries, InitializeTwice)
+{
+    std::stringstream data;
+    data << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
+
+    data_series series;
+    ASSERT_TRUE(series.load(data));
+    ASSERT_TRUE(series.size() == 1);
+
+    // calling load again should overwrite any existing data, not add to it
+    std::stringstream data2;
+    data2 << "{\"bpi\":{\"2018-07-18\":7314.9425}}";
+    ASSERT_TRUE(series.load(data2));
+    ASSERT_TRUE(series.size() == 1);
+}
+
 TEST(DataSeries, TestRetrieval)
 {
     std::stringstream data;

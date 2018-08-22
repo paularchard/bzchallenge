@@ -10,8 +10,10 @@ namespace pt = boost::property_tree;
 // since it already implements a JSON parser for us
 bool data_series::load(std::istream &data)
 {
-    pt::ptree proptree;
+    // clear any existing data
+    this->clear();
 
+    pt::ptree proptree;
     try
     {
         pt::read_json(data, proptree);
