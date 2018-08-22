@@ -3,7 +3,7 @@
 namespace report
 {
 
-const int DELIMITER = '%';
+static const int DELIMITER = '%';
 
 static std::string
 extract_token(std::istream &strm)
