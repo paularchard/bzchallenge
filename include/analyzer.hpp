@@ -21,12 +21,22 @@ class analyzer
 public:
     analyzer(const std::map<date, double> &data);
 
+    // return the number of samples in the data
     size_t count(void) const { return len; }
     
+    // return the most recent pair with the highest value
     std::pair<date, double> highest(void) const;
+
+    // return the most recent pair with the lowest value
     std::pair<date, double> lowest(void) const;
+
+    // return the mean value of the data
     double mean_value(void) const;
+
+    // return the median value of the data
     double median_value(void) const;
+
+    // return the sample standard deviation of the data
     double stddev_value(void) const;
 
 private:

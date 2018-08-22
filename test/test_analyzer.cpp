@@ -112,3 +112,24 @@ TEST(Analyzer, TestSplitMedian)
     }
 }
 
+TEST(Analyzer, TestDuplicateValues)
+{
+    std::map<date, double> data;
+    data.insert(std::make_pair(date(2018, 1, 1), 1.));
+    data.insert(std::make_pair(date(2018, 1, 2), 4.));
+    data.insert(std::make_pair(date(2018, 1, 3), 1.));
+    data.insert(std::make_pair(date(2018, 1, 4), 4.));
+    
+    analyzer a(data);
+    try
+    {
+        // the most recent pairs with duplicate values 
+        // should be returned in each case
+        EXPECT_EQ(a.highest().first, date(2018, 1, 4));
+        EXPECT_EQ(a.lowest().first, date(2018, 1, 3));
+    }
+    catch (std::exception &e)
+    {
+        FAIL() << "Unexpected exception thrown";
+    }
+}

@@ -8,10 +8,10 @@ analyzer::analyzer(const std::map<date, double> &data)
     double sum = 0.;
     for (auto &d : data)
     {
-        if (!this->len || (d.second > this->max_val.second))
+        if (!this->len || (d.second >= this->max_val.second))
             this->max_val = d;
 
-        if (!this->len || (d.second < this->min_val.second))
+        if (!this->len || (d.second <= this->min_val.second))
             this->min_val = d;
 
         this->len++;
