@@ -60,8 +60,8 @@ TEST(Analyzer, TestStdDevOnTwoValues)
     try
     {
         double res = a.stddev_value();
-        ASSERT_GT(res, 1.707);
-        ASSERT_LT(res, 1.708);
+        ASSERT_GT(res, 0.707);
+        ASSERT_LT(res, 0.708);
     }
     catch (std::exception &e)
     {
@@ -72,9 +72,9 @@ TEST(Analyzer, TestStdDevOnTwoValues)
 TEST(Analyzer, TestValidCase)
 {
     std::map<date, double> data;
+    data.insert(std::make_pair(date(2018, 1, 2), 3.));
     data.insert(std::make_pair(date(2018, 1, 1), 1.));
-    data.insert(std::make_pair(date(2018, 1, 2), 2.));
-    data.insert(std::make_pair(date(2018, 1, 3), 3.));
+    data.insert(std::make_pair(date(2018, 1, 3), 2.));
     
     analyzer a(data);
     EXPECT_EQ(a.count(), 3U);
@@ -84,7 +84,7 @@ TEST(Analyzer, TestValidCase)
         EXPECT_EQ(a.mean_value(), 2.);
         EXPECT_EQ(a.median_value(), 2.);
         EXPECT_EQ(a.stddev_value(), 1.);
-        EXPECT_EQ(a.highest(), std::make_pair(date(2018, 1, 3), 3.));
+        EXPECT_EQ(a.highest(), std::make_pair(date(2018, 1, 2), 3.));
         EXPECT_EQ(a.lowest(), std::make_pair(date(2018, 1, 1), 1.));
     }
     catch (std::exception &e)
@@ -97,9 +97,9 @@ TEST(Analyzer, TestSplitMedian)
 {
     std::map<date, double> data;
     data.insert(std::make_pair(date(2018, 1, 1), 1.));
-    data.insert(std::make_pair(date(2018, 1, 2), 2.));
+    data.insert(std::make_pair(date(2018, 1, 2), 4.));
     data.insert(std::make_pair(date(2018, 1, 3), 3.));
-    data.insert(std::make_pair(date(2018, 1, 4), 4.));
+    data.insert(std::make_pair(date(2018, 1, 4), 2.));
     
     analyzer a(data);
     try
