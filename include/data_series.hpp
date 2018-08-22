@@ -1,4 +1,7 @@
+#pragma once
+
 #include <map>
+#include <iostream>
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 typedef boost::gregorian::date date;
@@ -13,5 +16,5 @@ typedef boost::gregorian::date date;
 class data_series : public std::map<date, double>
 {
 public:
-    bool load(std::istream &data) { return false; }
+    bool load(std::istream &data);
 };

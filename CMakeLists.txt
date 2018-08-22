@@ -9,8 +9,23 @@ include(ExtProjectUtils)
 
 find_package(Threads REQUIRED)
 
+set(REQUIRED_BOOST "1.67.0")
+set(Boost_USE_STATIC_LIBS on)
+
+find_package(
+        Boost ${REQUIRED_BOOST}
+        REQUIRED COMPONENTS
+        date_time
+        program_options
+)
+
+if(Boost_FOUND)
+    message(STATUS "Boost: ${Boost_INCLUDE_DIRS}")
+    include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wno-deprecated")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O0 -ggdb -Wall -Wno-deprecated")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-deprecated")
 endif()
 
@@ -47,6 +62,7 @@ include_directories(${COMMON_INCLUDES})
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 add_library(${PROJECT_NAME_STR}_objects OBJECT ${SRC_FILES})
 add_executable(${PROJECT_NAME_STR} $<TARGET_OBJECTS:${PROJECT_NAME_STR}_objects> ${PROJECT_SOURCE_DIR}/main/main.cpp)
+target_link_libraries(${PROJECT_NAME_STR} boost_date_time)
 
 file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
 
@@ -55,7 +71,7 @@ foreach(_test_file ${TEST_SRC_FILES})
     get_filename_component(_test_name ${_test_file} NAME_WE)
     add_executable(${_test_name} ${_test_file} $<TARGET_OBJECTS:${PROJECT_NAME_STR}_objects>)
     add_dependencies(${_test_name} "googletest.git")
-    target_link_libraries(${_test_name} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${_test_name} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT} boost_date_time)
     add_test(${_test_name} ${_test_name})
     set_tests_properties(${_test_name} PROPERTIES TIMEOUT 5)
 endforeach()

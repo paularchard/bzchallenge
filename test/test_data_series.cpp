@@ -11,10 +11,19 @@ TEST(DataSeries, InitializeWithValidData)
     ASSERT_TRUE(series.size() == 1);
 }
 
+TEST(DataSeries, InitializeWithInvalidJson)
+{
+    std::stringstream data;
+    data << "{{\"2018-07-17\":7314.9425}";
+
+    data_series series;
+    ASSERT_FALSE(series.load(data));
+}
+
 TEST(DataSeries, InitializeWithNoHeader)
 {
     std::stringstream data;
-    data << "{{\"2018-07-17\":7314.9425}}";
+    data << "{\"2018-07-17\":7314.9425}";
 
     data_series series;
     ASSERT_FALSE(series.load(data));
@@ -23,7 +32,7 @@ TEST(DataSeries, InitializeWithNoHeader)
 TEST(DataSeries, InitializeWithBadDate)
 {
     std::stringstream data;
-    data << "{{\"2018-13-17\":7314.9425}}";
+    data << "{\"bpi\":{\"2018-13-17\":7314.9425}}";
 
     data_series series;
     ASSERT_FALSE(series.load(data));
@@ -32,7 +41,7 @@ TEST(DataSeries, InitializeWithBadDate)
 TEST(DataSeries, InitializeWithBadValue)
 {
     std::stringstream data;
-    data << "{{\"2018-13-17\":\"xxx\"}}";
+    data << "{\"bpi\":{\"2018-12-17\":\"xxx\"}}";
 
     data_series series;
     ASSERT_FALSE(series.load(data));
@@ -82,6 +91,7 @@ TEST(DataSeries, TestSortByDate)
    
     data_series::iterator prev = series.begin();
     ASSERT_TRUE(prev != series.end());
+
     data_series::iterator next = prev;
     next++;
     while (next != series.end())
