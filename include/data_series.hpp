@@ -2,9 +2,7 @@
 
 #include <map>
 #include <iostream>
-#include <boost/date_time/gregorian/gregorian.hpp>
-
-typedef boost::gregorian::date date;
+#include <common.hpp>
 
 // This class represents a date-based data series which may accessed like a standard map.
 // The input is taken from a custom, JSON-based data structure (as a stream) of the format:
