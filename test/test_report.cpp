@@ -2,6 +2,8 @@
 #include <report.hpp>
 #include <sstream>
 
+using namespace report;
+
 TEST(Report, TestEmptyData)
 {
     try
@@ -117,10 +119,10 @@ TEST(Report, TestUnterminatedToken)
     try
     {
         std::stringstream ss;
-        ss << "This is a %val of make_report";
+        ss << "This is a test of %val";
 
         std::map<std::string, std::string> tokens;
-        tokens.insert(std::make_pair("val", "test"));
+        tokens.insert(std::make_pair("val", "make_report"));
 
         std::string report = make_report(ss, tokens);
         FAIL() << "Expected exception to be thrown";
