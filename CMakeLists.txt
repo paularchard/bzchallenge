@@ -24,21 +24,15 @@ if(Boost_FOUND)
     include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 endif()
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O0 -ggdb -Wall -Wno-deprecated")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-deprecated")
-endif()
+# compiler options...
+set(CMAKE_CXX_STANDARD 17)
+add_compile_options("-fdiagnostics-color=auto")
 
-if(MSVC)
-    #vc 2012 fix for vararg templates
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_VARIADIC_MAX=10")
-endif()
+set(warnings "-Wno-deprecated-declarations -Wall -Wextra -Werror -Wpedantic -Wno-extended-offsetof")
+set(CMAKE_CXX_FLAGS ${warnings})
+set(CMAKE_C_FLAGS   ${warnings})
 
-if(WIN32)
-    set(_OPT_CMAKE_ARGS "-Dgtest_force_shared_crt=ON;-DCMAKE_SH=CMAKE_SH-NOTFOUND")
-else()
-    set(_OPT_CMAKE_ARGS "")
-endif()
+set(_OPT_CMAKE_ARGS "")
 
 # Will download external CMakeable project from git repo, branch "master" and install it in $DEPS_ROOT
 # This also will create "googletest.git" target, which we'll use as dependency for our test project
