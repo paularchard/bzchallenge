@@ -19,10 +19,14 @@
 
 namespace pt = boost::property_tree;
 
+// tag name to look for in JSON data
+static const std::string BASE_KEY = "bpi";
+
 // Load data into the data_series. 
 // In this case we're using boost::property_tree as a helper
 // since it already implements a JSON parser for us
-bool data_series::load(std::istream &data)
+bool 
+data_series::load(std::istream &data)
 {
     // clear any existing data
     this->clear();
@@ -33,7 +37,7 @@ bool data_series::load(std::istream &data)
         pt::read_json(data, proptree);
 
         // validate and copy the keys and values into local map
-        pt::ptree::assoc_iterator base = proptree.find("bpi");
+        pt::ptree::assoc_iterator base = proptree.find(BASE_KEY);
         if (base != proptree.not_found())
         {
             for (auto it : base->second)
@@ -43,7 +47,7 @@ bool data_series::load(std::istream &data)
         }
         else
         {
-            std::cerr << "\"bpi\" tag not found in data" << std::endl;
+            std::cerr << "\"" << BASE_KEY << "\" key name not found in data" << std::endl;
             return false;
         }
     }
