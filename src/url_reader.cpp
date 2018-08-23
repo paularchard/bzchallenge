@@ -95,7 +95,10 @@ url_reader::read(void)
             this->data = std::move(res.body());
         }
         else
+        {
+            std::cout << "HTTPS request returned " << res.result_int() << std::endl;
             result = false;
+        }
     }
     catch (std::exception const& e)
     {

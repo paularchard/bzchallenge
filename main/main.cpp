@@ -48,7 +48,54 @@ display_usage(const char *prog_name)
 	std::cout << "  filename      JSON file containing price data" << std::endl;
 	std::cout << "  start-date    First date for price info (yyyy-mm-dd)" << std::endl;
 	std::cout << "  end-date      Last date for price info (yyyy-mm-dd)" << std::endl << std::endl;
+	std::cout << "Summary:" << std::endl;
+	std::cout << "Retrieves price data from a file (first form) or from an online service (second form)" << std::endl;
+	std::cout << "and provides statistics on the data. The second format requires a start and end date" << std::endl;
+	std::cout << "which specify the date range to process data for." << std::endl << std::endl;
+}
 
+std::unique_ptr<std::istream>
+get_file_stream(const char *name)
+{
+	auto file = std::make_unique<std::fstream>(name, std::fstream::in);
+	if (!(file->good()))
+	{
+		std::cerr << "Unable to open file " << std::string(name) << std::endl;
+		exit(-1);
+	}
+
+	// note - fstream will close file when it goes out of scope
+	return file;
+}
+
+std::unique_ptr<std::istream>
+get_url_stream(const char *arg1, const char *arg2)
+{
+	try
+	{
+		auto start = boost::gregorian::to_iso_extended_string(
+			boost::gregorian::from_string(std::string(arg1)));
+		auto end = boost::gregorian::to_iso_extended_string(
+			boost::gregorian::from_string(std::string(arg2)));
+
+		auto url = BASE_URL + "?start=" + start + "&end=" + end;
+		auto reader = url_reader(url);
+		if (reader.read())
+		{
+			return std::make_unique<std::stringstream>(reader.response());
+		}
+	}
+	catch (const boost::bad_lexical_cast &e)
+	{
+		std::cerr << "\nError: the dates you provided were not valid." << std::endl;
+		std::cerr << "Please use dates in the form yyyy-mm-dd, e.g. 2018-01-31." << std::endl << std::endl;
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << "An exception occurred reading data: " << e.what() << std::endl;
+	}
+
+	exit(-1);
 }
 
 std::unique_ptr<std::istream>
@@ -63,49 +110,13 @@ get_input_stream_from_args(int argc, char *argv[])
 	if (argc == 2)
 	{
 		// if there's a single argument, we assume it's a filename
-		auto file = std::make_unique<std::fstream>(argv[1], std::fstream::in);
-		if (!(file->good()))
-		{
-			std::cerr << "Unable to open file " << std::string(argv[1]) << std::endl;
-			exit(-1);
-		}
-
-		// note - fstream will close file when it goes out of scope
-		return file;
+		return get_file_stream(argv[1]);
 	}
 	else if (argc == 3)
 	{
-		// if there's two arguments, try to turn them into dates
-		try
-		{
-			auto start = boost::gregorian::to_iso_extended_string(
-				boost::gregorian::from_string(std::string(argv[1])));
-			auto end = boost::gregorian::to_iso_extended_string(
-				boost::gregorian::from_string(std::string(argv[2])));
-
-			auto url = BASE_URL + "?start=" + start + "&end=" + end;
-			auto reader = url_reader(url);
-			if (reader.read())
-			{
-				auto strm = std::make_unique<std::stringstream>();
-				strm->str(reader.response());
-				return strm;
-			}
-		}
-		catch (const boost::bad_lexical_cast &e)
-		{
-			std::cerr << "\nError: the dates you provided were not valid." << std::endl;
-			std::cerr << "Please use dates in the form yyyy-mm-dd, e.g. 2018-01-31." << std::endl;
-			
-			display_usage(argv[0]);
-			exit(-1);
-		}
-		catch (const std::exception &e)
-		{
-			std::cerr << "An exception occurred reading data: " << e.what() << std::endl;
-		}
-
-		exit(-1);
+		// if there's two arguments, try to use them as start and end dates
+		// for a url request
+		return get_url_stream(argv[1], argv[2]);
 	}
 	else
 	{
