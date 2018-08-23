@@ -17,31 +17,47 @@
 
 TEST(UrlReader, TestEmptyUrl)
 {
-    url_reader reader("");
-    ASSERT_EQ(reader.read(), false);
+    try
+    {
+        url_reader reader("");
+        FAIL() << "Expected exception to be thrown";
+    }
+    catch (std::exception &e)
+    {
+        std::cout << "caught exception " << e.what() << std::endl;
+        EXPECT_EQ(e.what(), std::string("invalid argument"));
+    }
 }
 
 TEST(UrlReader, TestBadUrl)
 {
-    url_reader reader("htt://www.test.com/");
-    ASSERT_EQ(reader.read(), false);
+    try
+    {
+        url_reader reader("htt://www.test.com/");
+        FAIL() << "Expected exception to be thrown";
+    }
+    catch (std::exception &e)
+    {
+        std::cout << "caught exception " << e.what() << std::endl;
+        EXPECT_EQ(e.what(), std::string("invalid argument"));
+    }
 }
 
 TEST(UrlReader, Test404)
 {
-    url_reader reader("http://www.cnn.com/garbage");
+    url_reader reader("https://www.cnn.com/garbage");
     ASSERT_EQ(reader.read(), false);
 }
 
 TEST(UrlReader, TestBadHost)
 {
-    url_reader reader("http://www.test2.com/");
+    url_reader reader("https://www.test2.com/");
     ASSERT_EQ(reader.read(), false);
 }
 
 TEST(UrlReader, TestValidUrl)
 {
-    url_reader reader("http://www.google.com/");
+    url_reader reader("https://www.google.com/");
     ASSERT_EQ(reader.read(), true);
     const std::string &response = reader.response();
 

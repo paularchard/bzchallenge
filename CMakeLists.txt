@@ -16,7 +16,7 @@ find_package(
         Boost ${REQUIRED_BOOST}
         REQUIRED COMPONENTS
         date_time
-        program_options
+        system
 )
 
 if(Boost_FOUND)
@@ -62,7 +62,7 @@ include_directories(${COMMON_INCLUDES})
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 add_library(${PROJECT_NAME_STR}_objects OBJECT ${SRC_FILES})
 add_executable(${PROJECT_NAME_STR} $<TARGET_OBJECTS:${PROJECT_NAME_STR}_objects> ${PROJECT_SOURCE_DIR}/main/main.cpp)
-target_link_libraries(${PROJECT_NAME_STR} boost_date_time)
+target_link_libraries(${PROJECT_NAME_STR} boost_date_time boost_system ${CMAKE_THREAD_LIBS_INIT} ssl crypto)
 
 file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
 
@@ -71,7 +71,7 @@ foreach(_test_file ${TEST_SRC_FILES})
     get_filename_component(_test_name ${_test_file} NAME_WE)
     add_executable(${_test_name} ${_test_file} $<TARGET_OBJECTS:${PROJECT_NAME_STR}_objects>)
     add_dependencies(${_test_name} "googletest.git")
-    target_link_libraries(${_test_name} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT} boost_date_time)
+    target_link_libraries(${_test_name} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT} boost_date_time boost_system ssl crypto)
     add_test(${_test_name} ${_test_name})
     set_tests_properties(${_test_name} PROPERTIES TIMEOUT 5)
 endforeach()
