@@ -54,15 +54,16 @@ url_reader::url_reader(const std::string &url)
 bool 
 url_reader::read(void)
 {
-    auto result = true;
     using tcp = boost::asio::ip::tcp;
     namespace http = boost::beast::http;
     namespace ssl = boost::asio::ssl;
 
+    auto result = true;
+
     // initialize the ASIO and SSL contexts
     boost::asio::io_context ioc;
-    ssl::context ctx{ssl::context::sslv23_client};
-    ssl::stream<tcp::socket> ssl_stream{ioc, ctx};
+    ssl::context ctx(ssl::context::sslv23_client);
+    ssl::stream<tcp::socket> ssl_stream(ioc, ctx);
 
     try
     {
@@ -74,13 +75,13 @@ url_reader::read(void)
         }
 
         // resolve the hostname and connect
-        tcp::resolver resolver{ioc};
+        tcp::resolver resolver(ioc);
         auto const results = resolver.resolve(this->hostname, this->port);
         boost::asio::connect(ssl_stream.next_layer(), results.begin(), results.end());
         ssl_stream.handshake(ssl::stream_base::client);
 
         // set up and send request
-        http::request<http::string_body> req{http::verb::get, this->path, HTTP_VERSION};
+        http::request<http::string_body> req(http::verb::get, this->path, HTTP_VERSION);
         req.set(http::field::host, this->hostname);
         req.set(http::field::user_agent, VERSION_STRING);
         http::write(ssl_stream, req);

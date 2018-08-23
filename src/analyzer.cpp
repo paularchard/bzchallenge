@@ -100,7 +100,7 @@ analyzer::calculate_median(const std::map<date, double> &data) const
         });
     std::sort(values.begin(), values.end());
 
-    size_t size = values.size();
+    auto size = values.size();
     assert(size);
 
     if (size % 2)
