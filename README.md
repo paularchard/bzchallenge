@@ -6,7 +6,7 @@ This repository contains sample code for a C++ challenge assignment. I won't des
 
 ### Prerequisites
 
-You will need a C++ compiler (e.g. GNU GCC) and CMake to build and run this project.
+You will need a C++ compiler (e.g. GNU GCC) and CMake to build and run this project. You will also need a recent version of Boost installed.
 
 ### Installing
 
