@@ -70,7 +70,7 @@ TEST(DataSeries, InitializeTwice)
     ASSERT_TRUE(series.load(strm));
     ASSERT_TRUE(series.get().size() == 1);
 
-    // calling load again should overwrite any existing strm, not add to it
+    // calling load again should overwrite any existing data, not add to it
     std::stringstream strm2;
     strm2 << "{\"bpi\":{\"2018-07-18\":7314.9425}}";
     ASSERT_TRUE(series.load(strm2));
