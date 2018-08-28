@@ -134,7 +134,7 @@ main(int argc, char *argv[])
 	{
 		try
 		{
-			analyzer a(data);
+			analyzer a(data.get());
 			std::map<std::string, std::string> tokens;
 			tokens.insert(std::make_pair("count", std::to_string(a.count())));
 			tokens.insert(std::make_pair("hi_date", boost::gregorian::to_iso_extended_string(a.highest().first)));

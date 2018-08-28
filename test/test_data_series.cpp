@@ -17,114 +17,117 @@
 
 TEST(DataSeries, InitializeWithValidData)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
 
     data_series series;
-    ASSERT_TRUE(series.load(data));
-    ASSERT_TRUE(series.size() == 1);
+    ASSERT_TRUE(series.load(strm));
+    ASSERT_TRUE(series.get().size() == 1);
 }
 
 TEST(DataSeries, InitializeWithInvalidJson)
 {
-    std::stringstream data;
-    data << "{{\"2018-07-17\":7314.9425}";
+    std::stringstream strm;
+    strm << "{{\"2018-07-17\":7314.9425}";
 
     data_series series;
-    ASSERT_FALSE(series.load(data));
+    ASSERT_FALSE(series.load(strm));
 }
 
 TEST(DataSeries, InitializeWithNoHeader)
 {
-    std::stringstream data;
-    data << "{\"2018-07-17\":7314.9425}";
+    std::stringstream strm;
+    strm << "{\"2018-07-17\":7314.9425}";
 
     data_series series;
-    ASSERT_FALSE(series.load(data));
+    ASSERT_FALSE(series.load(strm));
 }
 
 TEST(DataSeries, InitializeWithBadDate)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-13-17\":7314.9425}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-13-17\":7314.9425}}";
 
     data_series series;
-    ASSERT_FALSE(series.load(data));
+    ASSERT_FALSE(series.load(strm));
 }
 
 TEST(DataSeries, InitializeWithBadValue)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-12-17\":\"xxx\"}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-12-17\":\"xxx\"}}";
 
     data_series series;
-    ASSERT_FALSE(series.load(data));
+    ASSERT_FALSE(series.load(strm));
 }
 
 TEST(DataSeries, InitializeTwice)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
 
     data_series series;
-    ASSERT_TRUE(series.load(data));
-    ASSERT_TRUE(series.size() == 1);
+    ASSERT_TRUE(series.load(strm));
+    ASSERT_TRUE(series.get().size() == 1);
 
-    // calling load again should overwrite any existing data, not add to it
-    std::stringstream data2;
-    data2 << "{\"bpi\":{\"2018-07-18\":7314.9425}}";
-    ASSERT_TRUE(series.load(data2));
-    ASSERT_TRUE(series.size() == 1);
+    // calling load again should overwrite any existing strm, not add to it
+    std::stringstream strm2;
+    strm2 << "{\"bpi\":{\"2018-07-18\":7314.9425}}";
+    ASSERT_TRUE(series.load(strm2));
+    ASSERT_TRUE(series.get().size() == 1);
 }
 
 TEST(DataSeries, TestRetrieval)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-07-17\":7314.9425}}";
 
     data_series series;
-    ASSERT_TRUE(series.load(data));
+    ASSERT_TRUE(series.load(strm));
     
-    data_series::iterator it = series.begin();
-    ASSERT_TRUE(it != series.end());
+    auto &data = series.get();
+    auto it = data.begin();
+    ASSERT_TRUE(it != data.end());
     ASSERT_EQ(it->first, date(2018, 7, 17));
     ASSERT_EQ(it->second, double(7314.9425));
 }
 
 TEST(DataSeries, TestIteration)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-07-17\":7314.9425,\"2018-07-18\":7378.7575,\"2018-07-19\":7470.825,\"2018-07-20\":7330.5363}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-07-17\":7314.9425,\"2018-07-18\":7378.7575,\"2018-07-19\":7470.825,\"2018-07-20\":7330.5363}}";
 
     data_series series;
-    ASSERT_TRUE(series.load(data));
+    ASSERT_TRUE(series.load(strm));
     
-    data_series::iterator it = series.begin();
-    ASSERT_TRUE(it != series.end());
+    auto &data = series.get();
+    auto it = data.begin();
+    ASSERT_TRUE(it != data.end());
     it++;
-    ASSERT_TRUE(it != series.end());
+    ASSERT_TRUE(it != data.end());
     it++;
-    ASSERT_TRUE(it != series.end());
+    ASSERT_TRUE(it != data.end());
     it++;
-    ASSERT_TRUE(it != series.end());
+    ASSERT_TRUE(it != data.end());
     it++;
-    ASSERT_TRUE(it == series.end());
+    ASSERT_TRUE(it == data.end());
 }
 
 TEST(DataSeries, TestSortByDate)
 {
-    std::stringstream data;
-    data << "{\"bpi\":{\"2018-07-20\":7314.9425,\"2018-07-19\":7378.7575,\"2018-07-18\":7470.825,\"2018-07-17\":7330.5363}}";
+    std::stringstream strm;
+    strm << "{\"bpi\":{\"2018-07-20\":7314.9425,\"2018-07-19\":7378.7575,\"2018-07-18\":7470.825,\"2018-07-17\":7330.5363}}";
 
     data_series series;
-    ASSERT_TRUE(series.load(data));
-   
-    data_series::iterator prev = series.begin();
-    ASSERT_TRUE(prev != series.end());
+    ASSERT_TRUE(series.load(strm));
 
-    data_series::iterator next = prev;
+    auto &data = series.get();
+    auto prev = data.begin();
+    ASSERT_TRUE(prev != data.end());
+
+    auto next = prev;
     next++;
-    while (next != series.end())
+    while (next != data.end())
     {
         ASSERT_TRUE(next->first > prev->first);
         

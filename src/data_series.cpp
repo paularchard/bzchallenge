@@ -26,15 +26,15 @@ static const std::string BASE_KEY = "bpi";
 // In this case we're using boost::property_tree as a helper
 // since it already implements a JSON parser for us
 bool 
-data_series::load(std::istream &data)
+data_series::load(std::istream &strm)
 {
     // clear any existing data
-    this->clear();
+    this->data.clear();
 
     pt::ptree proptree;
     try
     {
-        pt::read_json(data, proptree);
+        pt::read_json(strm, proptree);
 
         // validate and copy the keys and values into local map
         pt::ptree::assoc_iterator base = proptree.find(BASE_KEY);
@@ -42,7 +42,7 @@ data_series::load(std::istream &data)
         {
             for (auto it : base->second)
             {
-                this->insert(std::make_pair(boost::gregorian::from_string(it.first), it.second.get_value<double>()));
+                this->data.insert(std::make_pair(boost::gregorian::from_string(it.first), it.second.get_value<double>()));
             }
         }
         else
